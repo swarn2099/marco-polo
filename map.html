@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>marco/polo | home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+</head>
+<style>
+#map {
+  height: 900px;
+}
+body{
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+   </style>
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="#">
+      <div class="columns is-mobile">
+        <div class="column">
+      <img src="img/logo.png" width="130" height="85">
+    </div>
+    <div class="column is-7">
+      Welcome User!
+    </div>
+  </div>
+    </a>
+  </div>
+</nav>
+<nav class="navbar is-fixed-bottom" role="navigation" aria-label="main navigation">
+    <div class="tabs is-centered">
+      <ul>
+        <li><a><span class="title is-5">Map</span></a></li>
+        <li><a><span  class="title is-5">List</span></a></li>
+        <li><a href="add.html"><span  class="title is-5">Add</span></a></li>
+      </ul>
+    </div>
+</nav>
+<body>
+  <section class="container">
+    <div id='map'></div>
+  </section>
+  <script>
+  var map, infoWindow;
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {
+        lat: -34.397,
+        lng: 150.644
+      },
+      zoom: 18,
+      disableDefaultUI: true
+
+    });
+    var contentString = '<h1>Your Current Location</h1>';
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        map.setCenter(pos);
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+        var marker = new google.maps.Marker({
+          position: pos,
+          map: map,
+        });
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+      }, function() {
+        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  }
+</script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwOo8vkPwF9-lteyjpdqDyn5RzKmjoKt4&callback=initMap">
+  </script>
+</body>
+
+</html>
