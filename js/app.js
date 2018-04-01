@@ -3,8 +3,8 @@ var map, infoWindow;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {
-      lat: -34.397,
-      lng: 150.644
+      lat: 32.985762,
+      lng: -96.750099
     },
     zoom: 18,
     disableDefaultUI: true
@@ -37,17 +37,6 @@ function initMap() {
     handleLocationError(false, infoWindow, map.getCenter());
   }
 }
-function addEvent() {
-  window.open("../www/event.html", "_self");
-}
-function chatWindow() {
-  var widgetEl = document.getElementById('my-ciscospark-widget');
-  // Init a new widget
-  ciscospark.widget(widgetEl).spaceWidget({
-    accessToken: 'YzMzM2Q2NjgtMDQ2MS00NzgxLTk3ZTktMmE0NDU5MmRiYWM0ZGE1ZjEyZTctZGJj',//jerry's id
-    spaceId: 'Y2lzY29zcGFyazovL3VzL1JPT00vNjkwYWM3MjAtMWE1MC0xMWU4LWJjNDQtYWI4NzRmMTM2ZjRl'//red bull groupchat
-  });
-}
 
 // Gets object data from Firebase
 function getData() {
@@ -65,32 +54,14 @@ function attachSecretMessage(marker, totalContentString) {
     infowindow.open(marker.get('map'), marker);
   });
 }
-
-
 var totalContentString = [];
 function gotData(data) {
   var values = data.val();
   var keys = Object.keys(values);
   console.log("Attempted to get all data from Firebase");
-  var iconBase = '../img/';
-  var icons = {
-         Food: {
-           icon: iconBase + 'fpin.png'
-         },
-         Entertainment: {
-           icon: iconBase + 'entpin.png'
-         },
-         Music: {
-           icon: iconBase + 'mpin.png'
-         }
-  };
-
   for (var i = 0; i < keys.length; i++) {
     var k = keys[i];
     var eventName = values[k].eventName;
-    console.log("Event name: " + eventName);
-    var chatRoomId = values[k].roomId;
-    var category = values[k].category;
     var description = values[k].description;
     var date = values[k].date;
     var location = values[k].location;
@@ -102,41 +73,22 @@ function gotData(data) {
       lat: latitude,
       lng: longitude
     };
-    var contentString = '<h2 class="title is-4 pink-text">' + eventName + '</h2>' + '<hr color="black">' +
-      '<h3 class="subtitle is-5">' + description + '</h3>' + '<hr color="black"><h4 class="center-align subtitle is-6">'
-       + startTime + '&nbsp&nbsp|&nbsp&nbsp' + endTime + '<br><br>' + location +
-       '</h4><hr class="black">' +'<div class="center-align"><a class="button is-rounded is-medium theme waves-effect waves-light red lighten-1 white-text center-align" onclick="chatWindow()" href="chat.html"><span class="animated inifinte pulse">&nbsp &nbsp &nbsp Group Chat &nbsp &nbsp &nbsp</span></a></div>';
+    var contentString = '<h6 class="is-size-5-mobile has-text-centered has-text-weight-bold has-text-primary">' + eventName + '</h6><br>'+
+      '<h6 class="is-size-7-mobile has-text-centered has-text-weight-light">' + description + '</h6>' + '<h6 class="is-size-7-mobile has-text-centered has-text-weight-light is-italic">'
+       + startTime + ' -  ' + endTime +
+       '</h6><br>' +'<a class="button is-rounded is-link"><span class="">Pool</span></a>'+'&nbsp <a class="button is-rounded is-success"><span class="">Map</span></a>';
     totalContentString.push(contentString);
-    for(var i = 0; i < totalContentString.length; i++) {
+    for(var j = 0; j < totalContentString.length; j++) {
       var marker = new google.maps.Marker({
         position: pos,
         map: map,
-        icon: icons[category].icon
       });
       attachSecretMessage(marker, totalContentString[i]);
     }
-    console.log("Event name: " + eventName);
-    console.log("Chat Room ID: " + chatRoomId);
-    console.log("Description: " + description);
-    console.log("Long: " + longitude);
-    console.log("lat: " + latitude);
   }
 }
 window.onload = gotData;
-
 function errData(err) {
   console.log('Error occured!');
   console.log(err);
-}
-
-function logout() {
-  firebase.auth().signOut().then(function() {
-    // Sign-out successful.
-    window.open("../www/login.html", "_self");
-    window.alert("User successfully signed out!");
-  }).catch(function(error) {
-    // An error happened.
-    window.alert("Sign out didnt work");
-  });
-
 }
